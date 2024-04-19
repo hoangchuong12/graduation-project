@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/product-options")
+@RequestMapping("/PRODUCTS-SERVICE/api/product-options")
 @RequiredArgsConstructor
 public class ProductOptionController {
 

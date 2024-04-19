@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/product-feedbacks")
+@RequestMapping("/PRODUCTS-SERVICE/api/product-feedbacks")
 @RequiredArgsConstructor
 public class ProductFeedBackController {
 

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/tags")
+@RequestMapping("/PRODUCTS-SERVICE/api/tags")
 @RequiredArgsConstructor
 public class TagController {
 

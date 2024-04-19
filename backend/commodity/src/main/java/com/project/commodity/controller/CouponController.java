@@ -15,7 +15,7 @@ import com.project.commodity.payload.response.CouponResponse;
 import com.project.commodity.service.CouponService;
 
 @RestController
-@RequestMapping("/api/coupon")
+@RequestMapping("/PRODUCTS-SERVICE/api/coupon")
 @RequiredArgsConstructor
 @Log4j2
 public class CouponController {

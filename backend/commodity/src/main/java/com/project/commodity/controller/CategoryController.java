@@ -15,7 +15,7 @@ import com.project.commodity.payload.response.CategoryResponse;
 import com.project.commodity.service.CategoryService;
 
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/PRODUCTS-SERVICE/api/category")
 @RequiredArgsConstructor
 @Log4j2
 public class CategoryController {

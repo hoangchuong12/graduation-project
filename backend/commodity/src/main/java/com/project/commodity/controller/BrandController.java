@@ -17,7 +17,7 @@ import com.project.commodity.service.BrandService;
 
 
 @RestController
-@RequestMapping("/api/brand")
+@RequestMapping("/PRODUCTS-SERVICE/api/brand")
 @RequiredArgsConstructor
 @Log4j2
 public class BrandController {
