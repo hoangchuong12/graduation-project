@@ -5,10 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
 import java.util.UUID;
-import java.sql.Timestamp;
 
+import jakarta.persistence.*;
 @Entity
 @Data
 @AllArgsConstructor
@@ -18,11 +17,8 @@ import java.sql.Timestamp;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-
-    
     private UUID id;
-    private String email;
     private String name;
-    private String password; 
-    private String googleId;
+    private String email;
+    private String password;
 }
