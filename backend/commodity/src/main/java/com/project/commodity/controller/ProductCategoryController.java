@@ -1,50 +1,68 @@
 package com.project.commodity.controller;
 
-import com.project.commodity.payload.request.ProductCategoryRequest;
-import com.project.commodity.payload.response.ProductCategoryResponse;
-import com.project.commodity.service.ProductCategoryService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.project.commodity.payload.response.ProductCategoryResponse;
+import com.project.commodity.service.ProductCategoryService;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/PRODUCTS-SERVICE/api/Product_categories")
-@RequiredArgsConstructor
+@RequestMapping("product-services/api/product-categories")
 public class ProductCategoryController {
 
     private final ProductCategoryService productCategoryService;
 
-    @PostMapping
-    public ResponseEntity<UUID> addCategory( @RequestBody ProductCategoryRequest request) {
-        UUID categoryId = productCategoryService.addProductCategory(request);
-        return new ResponseEntity<>(categoryId, HttpStatus.CREATED);
+    public ProductCategoryController(ProductCategoryService productCategoryService) {
+        this.productCategoryService = productCategoryService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<ProductCategoryResponse>> getAllCategories() {
-        List<ProductCategoryResponse> categories = productCategoryService.getAllProductCategories();
-        return new ResponseEntity<>(categories, HttpStatus.OK);
+    @PostMapping("/create")
+    public ResponseEntity<ProductCategoryResponse> createProductCategory(@RequestParam("productId") UUID productId,
+            @RequestParam("categoryId") UUID categoryId) {
+        ProductCategoryResponse createdProductCategory = productCategoryService.createProductCategory(productId,
+                categoryId);
+        return new ResponseEntity<>(createdProductCategory, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductCategoryResponse> getCategoryById(@PathVariable("id") UUID categoryId) {
-        ProductCategoryResponse category = productCategoryService.getProductCategoryById(categoryId);
-        return new ResponseEntity<>(category, HttpStatus.OK);
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteProductCategory(@RequestParam("productId") UUID productId,
+            @RequestParam("categoryId") UUID categoryId) {
+        productCategoryService.deleteProductCategory(productId, categoryId);
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductCategoryResponse> editCategory(@PathVariable("id") UUID categoryId,  @RequestBody ProductCategoryRequest request) {
-        ProductCategoryResponse updatedCategory = productCategoryService.editProductCategory(categoryId, request);
-        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
+    @GetMapping("/get-all")
+    public ResponseEntity<List<ProductCategoryResponse>> getAllProductCategories() {
+        List<ProductCategoryResponse> productCategories = productCategoryService.getAllProductCategories();
+        return ResponseEntity.ok(productCategories);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable("id") UUID categoryId) {
-        productCategoryService.deleteProductCategoryById(categoryId);
+    @GetMapping("/get-by-product-id/{productId}")
+    public ResponseEntity<List<ProductCategoryResponse>> getProductCategoriesByProductId(@PathVariable UUID productId) {
+        List<ProductCategoryResponse> productCategories = productCategoryService.getProductCategoriesByProductId(productId);
+        return ResponseEntity.ok(productCategories);
+    }
+
+    @GetMapping("/get-by-category-id/{categoryId}")
+    public ResponseEntity<List<ProductCategoryResponse>> getProductCategoriesByCategoryId(@PathVariable UUID categoryId) {
+        List<ProductCategoryResponse> productCategories = productCategoryService.getProductCategoriesByCategoryId(categoryId);
+        return ResponseEntity.ok(productCategories);
+    }
+
+    @DeleteMapping("/delete-by-product-id/{productId}")
+    public ResponseEntity<Void> deleteProductCategoriesByProductId(@PathVariable UUID productId) {
+        productCategoryService.deleteProductCategoriesByProductId(productId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/delete-by-category-id/{categoryId}")
+    public ResponseEntity<Void> deleteProductCategoriesByCategoryId(@PathVariable UUID categoryId) {
+        productCategoryService.deleteProductCategoriesByCategoryId(categoryId);
         return ResponseEntity.noContent().build();
     }
 }

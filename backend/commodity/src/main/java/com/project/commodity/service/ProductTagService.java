@@ -7,10 +7,18 @@ import com.project.commodity.payload.request.ProductTagRequest;
 import com.project.commodity.payload.response.ProductTagResponse;
 
 public interface ProductTagService {
-    public UUID addProductTag(ProductTagRequest ProductTagRequest);
-    public List <ProductTagResponse> getAllProductTags();
-    public ProductTagResponse getProductTagById (UUID ProductTagId);
-    public ProductTagResponse editProductTag(UUID ProductTagId, ProductTagRequest ProductTagRequest);
-    public void deleteProductTagById(UUID ProductTagId);
 
+    ProductTagResponse create(ProductTagRequest productTagRequest);
+
+    List<ProductTagResponse> getProductTagsByProductId(UUID productId);
+
+    List<ProductTagResponse> getProductTagsByTagId(UUID tagId);
+
+    void delete(UUID productId, UUID tagId);
+
+    void deleteProductTagsByProductId(UUID productId);
+
+    void deleteProductTagsByTagId(UUID tagId);
+
+    List<ProductTagResponse> getAllProductTags();
 }

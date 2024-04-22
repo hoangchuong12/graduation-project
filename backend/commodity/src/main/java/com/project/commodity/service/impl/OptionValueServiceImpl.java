@@ -1,69 +1,97 @@
 package com.project.commodity.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
 import com.project.commodity.entity.OptionValue;
-import com.project.commodity.exception.OptionValueServiceCustomException;
 import com.project.commodity.payload.request.OptionValueRequest;
 import com.project.commodity.payload.response.OptionValueResponse;
 import com.project.commodity.repository.OptionValueRepository;
 import com.project.commodity.service.OptionValueService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-@Log4j2
 public class OptionValueServiceImpl implements OptionValueService {
 
     private final OptionValueRepository optionValueRepository;
 
-    @Override
-    public UUID addOptionValue(OptionValueRequest request) {
-        OptionValue optionValue = new OptionValue();
-        BeanUtils.copyProperties(request, optionValue);
-        OptionValue savedOptionValue = optionValueRepository.save(optionValue);
-        return savedOptionValue.getId();
+    public OptionValueServiceImpl(OptionValueRepository optionValueRepository) {
+        this.optionValueRepository = optionValueRepository;
     }
 
     @Override
-    public List<OptionValueResponse> getAllOptionValues() {
-        return optionValueRepository.findAll().stream()
-                .map(optionValue -> {
-                    OptionValueResponse response = new OptionValueResponse();
-                    BeanUtils.copyProperties(optionValue, response);
-                    return response;
-                })
+    public OptionValueResponse create(OptionValueRequest optionValueRequest) {
+        OptionValue optionValue = new OptionValue();
+        mapRequestToEntity(optionValueRequest, optionValue);
+        optionValue.setCreatedAt(LocalDateTime.now());
+        OptionValue savedOptionValue = optionValueRepository.save(optionValue);
+        return mapOptionValueToResponse(savedOptionValue);
+    }
+
+    @Override
+    public OptionValueResponse getById(UUID id) {
+        OptionValue optionValue = optionValueRepository.findById(id).orElse(null);
+        if (optionValue != null) {
+            return mapOptionValueToResponse(optionValue);
+        }
+        return null;
+    }
+
+    @Override
+    public List<OptionValueResponse> getAll() {
+        List<OptionValue> optionValues = optionValueRepository.findAll();
+        return optionValues.stream()
+                .map(this::mapOptionValueToResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public OptionValueResponse getOptionValueById(UUID optionValueId) {
-        OptionValue optionValue = optionValueRepository.findById(optionValueId)
-                .orElseThrow(() -> new OptionValueServiceCustomException("Option value with given ID not found", "option_value_not_found"));
-        OptionValueResponse response = new OptionValueResponse();
-        BeanUtils.copyProperties(optionValue, response);
-        return response;
+    public OptionValueResponse update(UUID id, OptionValueRequest optionValueRequest) {
+        OptionValue existingOptionValue = optionValueRepository.findById(id).orElse(null);
+        if (existingOptionValue != null) {
+            mapRequestToEntity(optionValueRequest, existingOptionValue);
+            existingOptionValue.setUpdatedAt(LocalDateTime.now());
+            OptionValue updatedOptionValue = optionValueRepository.save(existingOptionValue);
+            return mapOptionValueToResponse(updatedOptionValue);
+        }
+        return null;
     }
 
     @Override
-    public OptionValueResponse editOptionValue(UUID optionValueId, OptionValueRequest request) {
-        OptionValue optionValue = optionValueRepository.findById(optionValueId)
-                .orElseThrow(() -> new OptionValueServiceCustomException("Option value with given ID not found", "option_value_not_found"));
-        BeanUtils.copyProperties(request, optionValue);
-        OptionValue savedOptionValue = optionValueRepository.save(optionValue);
-        OptionValueResponse response = new OptionValueResponse();
-        BeanUtils.copyProperties(savedOptionValue, response);
-        return response;
+    public OptionValueResponse delete(UUID id) {
+        OptionValue optionValue = optionValueRepository.findById(id).orElse(null);
+        if (optionValue != null) {
+            optionValueRepository.delete(optionValue);
+            return mapOptionValueToResponse(optionValue);
+        }
+        return null;
     }
 
     @Override
-    public void deleteOptionValueById(UUID optionValueId) {
-        log.info("Deleting option value with ID: {}", optionValueId);
-        optionValueRepository.deleteById(optionValueId);
+    public List<OptionValueResponse> findByOptionId(UUID optionId) {
+        List<OptionValue> optionValues = optionValueRepository.findByOptionId(optionId);
+        return optionValues.stream()
+                .map(this::mapOptionValueToResponse)
+                .collect(Collectors.toList());
+    }
+
+    private OptionValueResponse mapOptionValueToResponse(OptionValue optionValue) {
+        return OptionValueResponse.builder()
+                .id(optionValue.getId())
+                .optionId(optionValue.getOptionId())
+                .value(optionValue.getValue())
+                .createdAt(optionValue.getCreatedAt())
+                .updatedAt(optionValue.getUpdatedAt())
+                .createdBy(optionValue.getCreatedBy())
+                .updatedBy(optionValue.getUpdatedBy())
+                .build();
+    }
+
+    private void mapRequestToEntity(OptionValueRequest optionValueRequest, OptionValue optionValue) {
+        BeanUtils.copyProperties(optionValueRequest, optionValue);
     }
 }

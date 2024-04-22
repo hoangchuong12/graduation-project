@@ -2,30 +2,25 @@ package com.project.commodity.entity;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.*;
 import java.util.UUID;
 
-
-@Entity
 @Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Table(name = "PRODUCT_OPTION")
 public class ProductOption {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "PRODUCT_ID", referencedColumnName  = "id")
-    private Product ProductId ;
+    private UUID productId;
 
-    @ManyToOne
-    @JoinColumn(name = "OPTION_ID", referencedColumnName  = "id")
-    private Option OptionId;
+    private UUID optionId;
 }

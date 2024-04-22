@@ -1,11 +1,7 @@
 package com.project.commodity.service.impl;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
 import com.project.commodity.entity.ProductOption;
-import com.project.commodity.exception.ProductOptionServiceCustomException;
 import com.project.commodity.payload.request.ProductOptionRequest;
 import com.project.commodity.payload.response.ProductOptionResponse;
 import com.project.commodity.repository.ProductOptionRepository;
@@ -16,54 +12,69 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-@Log4j2
 public class ProductOptionServiceImpl implements ProductOptionService {
 
     private final ProductOptionRepository productOptionRepository;
 
+    public ProductOptionServiceImpl(ProductOptionRepository productOptionRepository) {
+        this.productOptionRepository = productOptionRepository;
+    }
+
     @Override
-    public UUID addProductOption(ProductOptionRequest request) {
+    public ProductOptionResponse createProductOption(ProductOptionRequest productOptionRequest) {
         ProductOption productOption = new ProductOption();
-        BeanUtils.copyProperties(request, productOption);
+        productOption.setProductId(productOptionRequest.getProductId());
+        productOption.setOptionId(productOptionRequest.getOptionId());
         ProductOption savedProductOption = productOptionRepository.save(productOption);
-        return savedProductOption.getId();
+        return mapProductOptionToResponse(savedProductOption);
+    }
+
+    @Override
+    public List<ProductOptionResponse> getProductOptionsByProductId(UUID productId) {
+        List<ProductOption> productOptions = productOptionRepository.findByProductId(productId);
+        return mapProductOptionsToResponse(productOptions);
+    }
+
+    @Override
+    public List<ProductOptionResponse> getProductOptionsByOptionId(UUID optionId) {
+        List<ProductOption> productOptions = productOptionRepository.findByOptionId(optionId);
+        return mapProductOptionsToResponse(productOptions);
+    }
+
+    @Override
+    public void deleteProductOption(UUID productId, UUID optionId) {
+        productOptionRepository.deleteByProductIdAndOptionId(productId, optionId);
+    }
+
+    @Override
+    public void deleteProductOptionsByProductId(UUID productId) {
+        productOptionRepository.deleteByProductId(productId);
+    }
+
+    @Override
+    public void deleteProductOptionsByOptionId(UUID optionId) {
+        productOptionRepository.deleteByOptionId(optionId);
     }
 
     @Override
     public List<ProductOptionResponse> getAllProductOptions() {
-        return productOptionRepository.findAll().stream()
-                .map(productOption -> {
-                    ProductOptionResponse response = new ProductOptionResponse();
-                    BeanUtils.copyProperties(productOption, response);
-                    return response;
-                })
+        List<ProductOption> productOptions = productOptionRepository.findAll();
+        return mapProductOptionsToResponse(productOptions);
+    }
+
+    // Helper method to map ProductOption to ProductOptionResponse
+    private ProductOptionResponse mapProductOptionToResponse(ProductOption productOption) {
+        return ProductOptionResponse.builder()
+                .id(productOption.getId())
+                .productId(productOption.getProductId())
+                .optionId(productOption.getOptionId())
+                .build();
+    }
+
+    // Helper method to map list of ProductOption to list of ProductOptionResponse
+    private List<ProductOptionResponse> mapProductOptionsToResponse(List<ProductOption> productOptions) {
+        return productOptions.stream()
+                .map(this::mapProductOptionToResponse)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public ProductOptionResponse getProductOptionById(UUID productOptionId) {
-        ProductOption productOption = productOptionRepository.findById(productOptionId)
-                .orElseThrow(() -> new ProductOptionServiceCustomException("Product option with given ID not found", "product_option_not_found"));
-        ProductOptionResponse response = new ProductOptionResponse();
-        BeanUtils.copyProperties(productOption, response);
-        return response;
-    }
-
-    @Override
-    public ProductOptionResponse editProductOption(UUID productOptionId, ProductOptionRequest request) {
-        ProductOption productOption = productOptionRepository.findById(productOptionId)
-                .orElseThrow(() -> new ProductOptionServiceCustomException("Product option with given ID not found", "product_option_not_found"));
-        BeanUtils.copyProperties(request, productOption);
-        ProductOption savedProductOption = productOptionRepository.save(productOption);
-        ProductOptionResponse response = new ProductOptionResponse();
-        BeanUtils.copyProperties(savedProductOption, response);
-        return response;
-    }
-
-    @Override
-    public void deleteProductOptionById(UUID productOptionId) {
-        log.info("Deleting product option with ID: {}", productOptionId);
-        productOptionRepository.deleteById(productOptionId);
     }
 }

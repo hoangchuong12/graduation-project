@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 @Entity
 @Data
@@ -26,8 +26,14 @@ public class Slider {
     private String Image;
 
     @Column(name = "CREATED_AT")
-    private Timestamp CreatedAt;
+    private LocalDateTime CreatedAt;
 
     @Column(name = "UPDATED_AT")
-    private Timestamp UpdatedAt;
+    private LocalDateTime UpdatedAt;
+
+    @Column(name = "CREATED_BY")
+    private UUID CreatedBy;
+
+    @Column(name = "UPDATED_BY")
+    private UUID UpdatedBy;
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import java.util.UUID;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -25,17 +25,18 @@ public class Banner {
     private String Name;
 
     @Column(name = "IMAGE")
-    private String Image;
+    @Lob
+    private byte[] image;
 
     @Column(name = "DESCRIPTION")
     private String Description;
 
     
     @Column(name = "CREATED_AT")
-    private Timestamp CreatedAt;
+    private LocalDateTime CreatedAt;
 
     @Column(name = "UPDATED_AT")
-    private Timestamp UpdatedAt;
+    private LocalDateTime UpdatedAt;
 
     @Column(name = "CREATED_BY")
     private UUID CreatedBy;

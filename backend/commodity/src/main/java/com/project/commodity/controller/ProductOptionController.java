@@ -1,51 +1,66 @@
 package com.project.commodity.controller;
 
-import com.project.commodity.payload.request.ProductOptionRequest;
-import com.project.commodity.payload.response.ProductOptionResponse;
-import com.project.commodity.service.ProductOptionService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.project.commodity.payload.request.ProductOptionRequest;
+import com.project.commodity.payload.response.ProductOptionResponse;
+import com.project.commodity.service.ProductOptionService;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/PRODUCTS-SERVICE/api/product-options")
-@RequiredArgsConstructor
+@RequestMapping("product-services/api/product-options")
 public class ProductOptionController {
 
     private final ProductOptionService productOptionService;
 
-    @PostMapping
-    public ResponseEntity<UUID> addProductOption( @RequestBody ProductOptionRequest request) {
-        UUID productOptionId = productOptionService.addProductOption(request);
-        return new ResponseEntity<>(productOptionId, HttpStatus.CREATED);
+    public ProductOptionController(ProductOptionService productOptionService) {
+        this.productOptionService = productOptionService;
     }
 
-    @GetMapping
+    @PostMapping("/create")
+    public ResponseEntity<ProductOptionResponse> createProductOption(@RequestBody ProductOptionRequest productOptionRequest) {
+        ProductOptionResponse createdProductOption = productOptionService.createProductOption(productOptionRequest);
+        return new ResponseEntity<>(createdProductOption, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get-all")
     public ResponseEntity<List<ProductOptionResponse>> getAllProductOptions() {
         List<ProductOptionResponse> productOptions = productOptionService.getAllProductOptions();
-        return new ResponseEntity<>(productOptions, HttpStatus.OK);
+        return ResponseEntity.ok(productOptions);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductOptionResponse> getProductOptionById(@PathVariable("id") UUID productOptionId) {
-        ProductOptionResponse productOption = productOptionService.getProductOptionById(productOptionId);
-        return new ResponseEntity<>(productOption, HttpStatus.OK);
+    @GetMapping("/get-by-product-id/{productId}")
+    public ResponseEntity<List<ProductOptionResponse>> getProductOptionsByProductId(@PathVariable UUID productId) {
+        List<ProductOptionResponse> productOptions = productOptionService.getProductOptionsByProductId(productId);
+        return ResponseEntity.ok(productOptions);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductOptionResponse> editProductOption(@PathVariable("id") UUID productOptionId,  @RequestBody ProductOptionRequest request) {
-        ProductOptionResponse updatedProductOption = productOptionService.editProductOption(productOptionId, request);
-        return new ResponseEntity<>(updatedProductOption, HttpStatus.OK);
+    @GetMapping("/get-by-option-id/{optionId}")
+    public ResponseEntity<List<ProductOptionResponse>> getProductOptionsByOptionId(@PathVariable UUID optionId) {
+        List<ProductOptionResponse> productOptions = productOptionService.getProductOptionsByOptionId(optionId);
+        return ResponseEntity.ok(productOptions);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProductOption(@PathVariable("id") UUID productOptionId) {
-        productOptionService.deleteProductOptionById(productOptionId);
+    @DeleteMapping("/delete/{productId}/{optionId}")
+    public ResponseEntity<Void> deleteProductOption(@PathVariable UUID productId, @PathVariable UUID optionId) {
+        productOptionService.deleteProductOption(productId, optionId);
         return ResponseEntity.noContent().build();
     }
-    
+
+    @DeleteMapping("/delete-by-product-id/{productId}")
+    public ResponseEntity<Void> deleteProductOptionsByProductId(@PathVariable UUID productId) {
+        productOptionService.deleteProductOptionsByProductId(productId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/delete-by-option-id/{optionId}")
+    public ResponseEntity<Void> deleteProductOptionsByOptionId(@PathVariable UUID optionId) {
+        productOptionService.deleteProductOptionsByOptionId(optionId);
+        return ResponseEntity.noContent().build();
+    }
 }

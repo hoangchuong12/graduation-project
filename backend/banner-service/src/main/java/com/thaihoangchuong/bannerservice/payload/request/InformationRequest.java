@@ -1,5 +1,8 @@
 package com.thaihoangchuong.bannerservice.payload.request;
 
+import java.util.UUID;
+
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +17,8 @@ import lombok.NoArgsConstructor;
 public class InformationRequest {
     
     private String Name;
-    private String Logo;
+    @Lob
+    private byte[] logo;
     private String Address;
     private String Email;
     private int Phone;
@@ -22,4 +26,5 @@ public class InformationRequest {
     private String License;
     private String Represent;
     private String RepresentPhone;
+    private UUID UpdatedBy;
 }

@@ -1,29 +1,35 @@
 package com.project.commodity.payload.request;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import java.util.UUID;
 
-import com.project.commodity.entity.Brand;
-
-import java.sql.Timestamp;
-
-@AllArgsConstructor
-@Data
-@NoArgsConstructor
 @Builder
+@Data
 public class ProductRequest {
-    private Brand BrandId;
-    private String ProductName;
-    private double Price;
-    private double detail;
-    private String Description;
+
+    private UUID brandId;
+
+    private String name;
+
+    private String image;
+
+    private Double price;
+
+    private String detail;
+
+    private String description;
+
     private Integer evaluate;
-    private Timestamp CreatedAt;
-    private Timestamp UpdatedAt;
-    private UUID CreatedBy;
-    private UUID UpdatedBy;
-    private Integer satatus;
+
+    private UUID createdBy;
+
+    private UUID updatedBy;
+
+    private Integer status;
+
+    private List<UUID> categoryIds;
+
+    private List<UUID> tagIds;
 }

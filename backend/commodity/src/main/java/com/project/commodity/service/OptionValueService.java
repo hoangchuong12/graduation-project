@@ -7,9 +7,16 @@ import com.project.commodity.payload.request.OptionValueRequest;
 import com.project.commodity.payload.response.OptionValueResponse;
 
 public interface OptionValueService {
-    public UUID addOptionValue(OptionValueRequest OptionValueRequest);
-    public List <OptionValueResponse> getAllOptionValues();
-    public OptionValueResponse getOptionValueById (UUID OptionValueId);
-    public OptionValueResponse editOptionValue(UUID OptionValueId, OptionValueRequest OptionValueRequest);
-    public void deleteOptionValueById(UUID OptionValueId);
+
+    OptionValueResponse create(OptionValueRequest optionValueRequest);
+
+    OptionValueResponse getById(UUID id);
+
+    List<OptionValueResponse> getAll();
+
+    OptionValueResponse update(UUID id, OptionValueRequest optionValueRequest);
+
+    OptionValueResponse delete(UUID id);
+
+    List<OptionValueResponse> findByOptionId(UUID optionId);
 }

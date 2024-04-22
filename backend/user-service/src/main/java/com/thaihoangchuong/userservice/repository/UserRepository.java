@@ -9,6 +9,8 @@ import com.thaihoangchuong.userservice.entity.User;
 
 public interface UserRepository extends JpaRepository<User, UUID>{
 
-    Optional<User> findByName(String username);
+
+    User findByEmail(String email);
+    Optional<User> findByUserName(String username);
 
 }

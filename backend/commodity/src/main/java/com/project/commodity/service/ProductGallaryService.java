@@ -7,10 +7,16 @@ import com.project.commodity.payload.request.ProductGallaryRequest;
 import com.project.commodity.payload.response.ProductGallaryResponse;
 
 public interface ProductGallaryService {
-    public UUID addProductGallary(ProductGallaryRequest ProductGallaryRequest);
-    public List <ProductGallaryResponse> getAllProductGallarys();
-    public ProductGallaryResponse getProductGallaryById (UUID ProductGallaryId);
-    public ProductGallaryResponse editProductGallary(UUID ProductGallaryId, ProductGallaryRequest ProductGallaryRequest);
-    public void deleteProductGallaryById(UUID ProductGallaryId);
 
+    ProductGallaryResponse create(ProductGallaryRequest productGallaryRequest);
+
+    ProductGallaryResponse getById(UUID id);
+
+    List<ProductGallaryResponse> getAll();
+
+    ProductGallaryResponse update(UUID id, ProductGallaryRequest productGallaryRequest);
+
+    ProductGallaryResponse delete(UUID id);
+
+    List<ProductGallaryResponse> findByProductId(UUID productId);
 }

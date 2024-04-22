@@ -1,51 +1,67 @@
 package com.project.commodity.controller;
 
-import com.project.commodity.payload.request.ProductTagRequest;
-import com.project.commodity.payload.response.ProductTagResponse;
-import com.project.commodity.service.ProductTagService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.project.commodity.payload.request.ProductTagRequest;
+import com.project.commodity.payload.response.ProductTagResponse;
+import com.project.commodity.service.ProductTagService;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/PRODUCTS-SERVICE/api/product-tags")
-@RequiredArgsConstructor
+@RequestMapping("product-services/api/product-tags")
 public class ProductTagController {
 
     private final ProductTagService productTagService;
 
-    @PostMapping
-    public ResponseEntity<UUID> addProductTag( @RequestBody ProductTagRequest request) {
-        UUID productTagId = productTagService.addProductTag(request);
-        return new ResponseEntity<>(productTagId, HttpStatus.CREATED);
+    public ProductTagController(ProductTagService productTagService) {
+        this.productTagService = productTagService;
     }
 
-    @GetMapping
+    @PostMapping("/create")
+    public ResponseEntity<ProductTagResponse> createProductTag(@RequestBody ProductTagRequest productTagRequest) {
+        ProductTagResponse createdProductTag = productTagService.create(productTagRequest);
+        return new ResponseEntity<>(createdProductTag, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteProductTag(@RequestParam("productId") UUID productId,
+                                                  @RequestParam("tagId") UUID tagId) {
+        productTagService.delete(productId, tagId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/get-all")
     public ResponseEntity<List<ProductTagResponse>> getAllProductTags() {
         List<ProductTagResponse> productTags = productTagService.getAllProductTags();
-        return new ResponseEntity<>(productTags, HttpStatus.OK);
+        return ResponseEntity.ok(productTags);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductTagResponse> getProductTagById(@PathVariable("id") UUID productTagId) {
-        ProductTagResponse productTag = productTagService.getProductTagById(productTagId);
-        return new ResponseEntity<>(productTag, HttpStatus.OK);
+    @GetMapping("/get-by-product-id/{productId}")
+    public ResponseEntity<List<ProductTagResponse>> getProductTagsByProductId(@PathVariable UUID productId) {
+        List<ProductTagResponse> productTags = productTagService.getProductTagsByProductId(productId);
+        return ResponseEntity.ok(productTags);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductTagResponse> editProductTag(@PathVariable("id") UUID productTagId,  @RequestBody ProductTagRequest request) {
-        ProductTagResponse updatedProductTag = productTagService.editProductTag(productTagId, request);
-        return new ResponseEntity<>(updatedProductTag, HttpStatus.OK);
+    @GetMapping("/get-by-tag-id/{tagId}")
+    public ResponseEntity<List<ProductTagResponse>> getProductTagsByTagId(@PathVariable UUID tagId) {
+        List<ProductTagResponse> productTags = productTagService.getProductTagsByTagId(tagId);
+        return ResponseEntity.ok(productTags);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProductTag(@PathVariable("id") UUID productTagId) {
-        productTagService.deleteProductTagById(productTagId);
+    @DeleteMapping("/delete-by-product-id/{productId}")
+    public ResponseEntity<Void> deleteProductTagsByProductId(@PathVariable UUID productId) {
+        productTagService.deleteProductTagsByProductId(productId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/delete-by-tag-id/{tagId}")
+    public ResponseEntity<Void> deleteProductTagsByTagId(@PathVariable UUID tagId) {
+        productTagService.deleteProductTagsByTagId(tagId);
         return ResponseEntity.noContent().build();
     }
 }

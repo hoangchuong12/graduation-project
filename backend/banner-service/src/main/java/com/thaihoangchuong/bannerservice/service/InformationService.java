@@ -7,9 +7,9 @@ import com.thaihoangchuong.bannerservice.payload.request.InformationRequest;
 import com.thaihoangchuong.bannerservice.payload.response.InformationResponse;
 
 public interface InformationService {
-    public UUID addInformation(InformationRequest InformationRequest);
-    public List <InformationResponse> getAllInformations();
-    public InformationResponse getInformationById (UUID InformationId);
-    public InformationResponse editInformation(UUID InformationId, InformationRequest InformationRequest);
-    public void deleteInformationById(UUID InformationId);
+    InformationResponse create(InformationRequest InformationRequest);
+    InformationResponse getById( UUID id);
+    List<InformationResponse> getAll();
+    InformationResponse update(UUID id , InformationRequest InformationRequest);
+    InformationResponse delete(UUID id);
 }

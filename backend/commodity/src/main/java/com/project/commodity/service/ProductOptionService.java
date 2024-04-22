@@ -7,9 +7,18 @@ import com.project.commodity.payload.request.ProductOptionRequest;
 import com.project.commodity.payload.response.ProductOptionResponse;
 
 public interface ProductOptionService {
-    public UUID addProductOption(ProductOptionRequest ProductOptionRequest);
-    public List <ProductOptionResponse> getAllProductOptions();
-    public ProductOptionResponse getProductOptionById (UUID ProductOptionId);
-    public ProductOptionResponse editProductOption(UUID ProductOptionId, ProductOptionRequest ProductOptionRequest);
-    public void deleteProductOptionById(UUID ProductOptionId);
+    
+    ProductOptionResponse createProductOption(ProductOptionRequest productOptionRequest);
+
+    List<ProductOptionResponse> getProductOptionsByProductId(UUID productId);
+
+    List<ProductOptionResponse> getProductOptionsByOptionId(UUID optionId);
+
+    void deleteProductOption(UUID productId, UUID optionId);
+
+    void deleteProductOptionsByProductId(UUID productId);
+
+    void deleteProductOptionsByOptionId(UUID optionId);
+
+    List<ProductOptionResponse> getAllProductOptions();
 }

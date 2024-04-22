@@ -1,17 +1,17 @@
 package com.thaihoangchuong.bannerservice.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import com.thaihoangchuong.bannerservice.payload.request.SliderRequest;
 import com.thaihoangchuong.bannerservice.payload.response.SliderResponse;
 import com.thaihoangchuong.bannerservice.service.SliderService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/BANNER-SERVICE/api/sliders")
+@RequestMapping("banner-services/api/sliders")
 public class SliderController {
 
     private final SliderService sliderService;
@@ -20,33 +20,45 @@ public class SliderController {
         this.sliderService = sliderService;
     }
 
-    @PostMapping
-    public ResponseEntity<UUID> addSlider(@RequestBody SliderRequest request) {
-        UUID sliderId = sliderService.addSlider(request);
-        return new ResponseEntity<>(sliderId, HttpStatus.CREATED);
+    @PostMapping("/create")
+    public ResponseEntity<SliderResponse> createSlider(@RequestBody SliderRequest sliderRequest) {
+        SliderResponse createdSlider = sliderService.create(sliderRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdSlider);
     }
 
-    @GetMapping
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<SliderResponse> getSliderById(@PathVariable UUID id) {
+        SliderResponse sliderResponse = sliderService.getById(id);
+        if (sliderResponse != null) {
+            return ResponseEntity.ok(sliderResponse);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/get-all")
     public ResponseEntity<List<SliderResponse>> getAllSliders() {
-        List<SliderResponse> allSliders = sliderService.getAllSliders();
-        return new ResponseEntity<>(allSliders, HttpStatus.OK);
+        List<SliderResponse> sliderResponses = sliderService.getAll();
+        return ResponseEntity.ok(sliderResponses);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SliderResponse> getSliderById(@PathVariable("id") UUID sliderId) {
-        SliderResponse sliderResponse = sliderService.getSliderById(sliderId);
-        return new ResponseEntity<>(sliderResponse, HttpStatus.OK);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<SliderResponse> updateSlider(@PathVariable UUID id, @RequestBody SliderRequest sliderRequest) {
+        SliderResponse updatedSlider = sliderService.update(id, sliderRequest);
+        if (updatedSlider != null) {
+            return ResponseEntity.ok(updatedSlider);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<SliderResponse> editSlider(@PathVariable("id") UUID sliderId, @RequestBody SliderRequest request) {
-        SliderResponse editedSlider = sliderService.editSlider(sliderId, request);
-        return new ResponseEntity<>(editedSlider, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSliderById(@PathVariable("id") UUID sliderId) {
-        sliderService.deleteSliderById(sliderId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<SliderResponse> deleteSlider(@PathVariable UUID id) {
+        SliderResponse deletedSlider = sliderService.delete(id);
+        if (deletedSlider != null) {
+            return ResponseEntity.ok(deletedSlider);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

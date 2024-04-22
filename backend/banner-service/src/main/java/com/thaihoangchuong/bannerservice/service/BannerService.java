@@ -7,9 +7,9 @@ import com.thaihoangchuong.bannerservice.payload.request.BannerRequest;
 import com.thaihoangchuong.bannerservice.payload.response.BannerResponse;
 
 public interface BannerService {
-    public UUID addBanner(BannerRequest BannerRequest);
-    public List <BannerResponse> getAllBanners();
-    public BannerResponse getBannerById (UUID BannerId);
-    public BannerResponse editBanner(UUID BannerId, BannerRequest BannerRequest);
-    public void deleteBannerById(UUID BannerId);
+    BannerResponse create(BannerRequest bannerRequest);
+    BannerResponse getById( UUID id);
+    List<BannerResponse> getAll();
+    BannerResponse update(UUID id , BannerRequest bannerRequest);
+    BannerResponse delete(UUID id);
 }

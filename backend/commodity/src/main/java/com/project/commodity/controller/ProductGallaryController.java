@@ -1,49 +1,68 @@
 package com.project.commodity.controller;
 
-import com.project.commodity.payload.request.ProductGallaryRequest;
-import com.project.commodity.payload.response.ProductGallaryResponse;
-import com.project.commodity.service.ProductGallaryService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.project.commodity.payload.request.ProductGallaryRequest;
+import com.project.commodity.payload.response.ProductGallaryResponse;
+import com.project.commodity.service.ProductGallaryService;
+
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/PRODUCTS-SERVICE/api/product-gallaries")
-@RequiredArgsConstructor
+@RequestMapping("product-services/api/product-galleries")
 public class ProductGallaryController {
 
     private final ProductGallaryService productGallaryService;
 
-    @PostMapping
-    public ResponseEntity<UUID> addProductGallary( @RequestBody ProductGallaryRequest request) {
-        UUID productGallaryId = productGallaryService.addProductGallary(request);
-        return new ResponseEntity<>(productGallaryId, HttpStatus.CREATED);
+    public ProductGallaryController(ProductGallaryService productGallaryService) {
+        this.productGallaryService = productGallaryService;
     }
 
-    @GetMapping
+    @PostMapping("/create")
+    public ResponseEntity<ProductGallaryResponse> createProductGallary(@RequestBody ProductGallaryRequest productGallaryRequest) {
+        ProductGallaryResponse createdProductGallary = productGallaryService.create(productGallaryRequest);
+        return new ResponseEntity<>(createdProductGallary, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get-all")
     public ResponseEntity<List<ProductGallaryResponse>> getAllProductGallaries() {
-        List<ProductGallaryResponse> productGallaries = productGallaryService.getAllProductGallarys();
-        return new ResponseEntity<>(productGallaries, HttpStatus.OK);
+        List<ProductGallaryResponse> productGallaries = productGallaryService.getAll();
+        return ResponseEntity.ok(productGallaries);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductGallaryResponse> getProductGallaryById(@PathVariable("id") UUID productGallaryId) {
-        ProductGallaryResponse productGallary = productGallaryService.getProductGallaryById(productGallaryId);
-        return new ResponseEntity<>(productGallary, HttpStatus.OK);
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<ProductGallaryResponse> getProductGallaryById(@PathVariable UUID id) {
+        ProductGallaryResponse productGallary = productGallaryService.getById(id);
+        if (productGallary != null) {
+            return ResponseEntity.ok(productGallary);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductGallaryResponse> editProductGallary(@PathVariable("id") UUID productGallaryId, @RequestBody ProductGallaryRequest request) {
-        ProductGallaryResponse updatedProductGallary = productGallaryService.editProductGallary(productGallaryId, request);
-        return new ResponseEntity<>(updatedProductGallary, HttpStatus.OK);
+    @GetMapping("/get-by-product-id/{productId}")
+    public ResponseEntity<List<ProductGallaryResponse>> getProductGallariesByProductId(@PathVariable UUID productId) {
+        List<ProductGallaryResponse> productGallaries = productGallaryService.findByProductId(productId);
+        return ResponseEntity.ok(productGallaries);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProductGallary(@PathVariable("id") UUID productGallaryId) {
-        productGallaryService.deleteProductGallaryById(productGallaryId);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ProductGallaryResponse> updateProductGallary(@RequestBody ProductGallaryRequest productGallaryRequest, @PathVariable UUID id) {
+        ProductGallaryResponse updatedProductGallary = productGallaryService.update(id, productGallaryRequest);
+        if (updatedProductGallary != null) {
+            return ResponseEntity.ok(updatedProductGallary);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ProductGallaryResponse> deleteProductGallary(@PathVariable UUID id) {
+        ProductGallaryResponse deletedProductGallary = productGallaryService.delete(id);
+        if (deletedProductGallary != null) {
+            return ResponseEntity.ok(deletedProductGallary);
+        }
+        return ResponseEntity.notFound().build();
     }
 }

@@ -1,70 +1,96 @@
 package com.project.commodity.service.impl;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
 import com.project.commodity.entity.ProductGallary;
-import com.project.commodity.exception.ProductGallaryServiceCustomException;
 import com.project.commodity.payload.request.ProductGallaryRequest;
 import com.project.commodity.payload.response.ProductGallaryResponse;
 import com.project.commodity.repository.ProductGallaryRepository;
 import com.project.commodity.service.ProductGallaryService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-@Log4j2
 public class ProductGallaryServiceImpl implements ProductGallaryService {
 
     private final ProductGallaryRepository productGallaryRepository;
 
-    @Override
-    public UUID addProductGallary(ProductGallaryRequest request) {
-        ProductGallary productGallary = new ProductGallary();
-        BeanUtils.copyProperties(request, productGallary);
-        ProductGallary savedProductGallary = productGallaryRepository.save(productGallary);
-        return savedProductGallary.getId();
+    public ProductGallaryServiceImpl(ProductGallaryRepository productGallaryRepository) {
+        this.productGallaryRepository = productGallaryRepository;
     }
 
     @Override
-    public List<ProductGallaryResponse> getAllProductGallarys() {
-        return productGallaryRepository.findAll().stream()
-                .map(productGallary -> {
-                    ProductGallaryResponse response = new ProductGallaryResponse();
-                    BeanUtils.copyProperties(productGallary, response);
-                    return response;
-                })
+    public ProductGallaryResponse create(ProductGallaryRequest productGallaryRequest) {
+        ProductGallary productGallary = new ProductGallary();
+        mapRequestToEntity(productGallaryRequest, productGallary);
+        productGallary.setCreatedAt(LocalDateTime.now());
+        ProductGallary savedProductGallary = productGallaryRepository.save(productGallary);
+        return mapProductGallaryToResponse(savedProductGallary);
+    }
+
+    @Override
+    public ProductGallaryResponse getById(UUID id) {
+        ProductGallary productGallary = productGallaryRepository.findById(id).orElse(null);
+        if (productGallary != null) {
+            return mapProductGallaryToResponse(productGallary);
+        }
+        return null;
+    }
+
+    @Override
+    public List<ProductGallaryResponse> getAll() {
+        List<ProductGallary> productGallaries = productGallaryRepository.findAll();
+        return productGallaries.stream()
+                .map(this::mapProductGallaryToResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ProductGallaryResponse getProductGallaryById(UUID productGallaryId) {
-        ProductGallary productGallary = productGallaryRepository.findById(productGallaryId)
-                .orElseThrow(() -> new ProductGallaryServiceCustomException("Product gallary with given ID not found", "product_gallary_not_found"));
-        ProductGallaryResponse response = new ProductGallaryResponse();
-        BeanUtils.copyProperties(productGallary, response);
-        return response;
+    public ProductGallaryResponse update(UUID id, ProductGallaryRequest productGallaryRequest) {
+        ProductGallary existingProductGallary = productGallaryRepository.findById(id).orElse(null);
+        if (existingProductGallary != null) {
+            mapRequestToEntity(productGallaryRequest, existingProductGallary);
+            existingProductGallary.setUpdatedAt(LocalDateTime.now());
+            ProductGallary updatedProductGallary = productGallaryRepository.save(existingProductGallary);
+            return mapProductGallaryToResponse(updatedProductGallary);
+        }
+        return null;
     }
 
     @Override
-    public ProductGallaryResponse editProductGallary(UUID productGallaryId, ProductGallaryRequest request) {
-        ProductGallary productGallary = productGallaryRepository.findById(productGallaryId)
-                .orElseThrow(() -> new ProductGallaryServiceCustomException("Product gallary with given ID not found", "product_gallary_not_found"));
-        BeanUtils.copyProperties(request, productGallary);
-        ProductGallary savedProductGallary = productGallaryRepository.save(productGallary);
-        ProductGallaryResponse response = new ProductGallaryResponse();
-        BeanUtils.copyProperties(savedProductGallary, response);
-        return response;
+    public ProductGallaryResponse delete(UUID id) {
+        ProductGallary productGallary = productGallaryRepository.findById(id).orElse(null);
+        if (productGallary != null) {
+            productGallaryRepository.delete(productGallary);
+            return mapProductGallaryToResponse(productGallary);
+        }
+        return null;
     }
 
     @Override
-    public void deleteProductGallaryById(UUID productGallaryId) {
-        log.info("Deleting product gallary with ID: {}", productGallaryId);
-        productGallaryRepository.deleteById(productGallaryId);
+    public List<ProductGallaryResponse> findByProductId(UUID productId) {
+        List<ProductGallary> productGallaries = productGallaryRepository.findByProductId(productId);
+        return productGallaries.stream()
+                .map(this::mapProductGallaryToResponse)
+                .collect(Collectors.toList());
+    }
+
+    private ProductGallaryResponse mapProductGallaryToResponse(ProductGallary productGallary) {
+        return ProductGallaryResponse.builder()
+                .id(productGallary.getId())
+                .productId(productGallary.getProductId())
+                .image(productGallary.getImage())
+                .createdAt(productGallary.getCreatedAt())
+                .updatedAt(productGallary.getUpdatedAt())
+                .createdBy(productGallary.getCreatedBy())
+                .updatedBy(productGallary.getUpdatedBy())
+                .build();
+    }
+
+    private void mapRequestToEntity(ProductGallaryRequest productGallaryRequest, ProductGallary productGallary) {
+        BeanUtils.copyProperties(productGallaryRequest, productGallary);
     }
 }
-

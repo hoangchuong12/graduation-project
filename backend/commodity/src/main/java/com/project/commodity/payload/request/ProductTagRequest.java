@@ -1,24 +1,14 @@
 package com.project.commodity.payload.request;
 
-import lombok.AllArgsConstructor;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-
-
-import com.project.commodity.entity.Product;
-import com.project.commodity.entity.Tag;
-
-
-@AllArgsConstructor
-@Data
-@NoArgsConstructor
 @Builder
+@Data
 public class ProductTagRequest {
 
+    private UUID productId;
 
-    private Product ProductId;
-
-    private Tag TagId;
+    private UUID tagId;
 }

@@ -1,25 +1,20 @@
 package com.project.commodity.payload.request;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-
-
-import java.sql.Timestamp;
 import java.util.UUID;
 
-@AllArgsConstructor
-@Data
-@NoArgsConstructor
+import jakarta.persistence.Lob;
+import lombok.Builder;
+import lombok.Data;
+
 @Builder
+@Data
 public class TagRequest {
-   
-    private String Name;
-    private String Icon;
-    private Timestamp CreatedAt;
-    private Timestamp UpdatedAt;
-    private UUID CreatedBy;
-    private UUID UpdatedBy;
+
+    private String name;
+
+    @Lob
+    private byte[] icon;
+
+    private UUID createdBy;
+
+    private UUID updatedBy;
 }

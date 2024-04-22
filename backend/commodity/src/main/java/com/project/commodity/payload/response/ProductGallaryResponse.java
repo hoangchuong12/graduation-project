@@ -1,31 +1,28 @@
 package com.project.commodity.payload.response;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.project.commodity.entity.Product;
-
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Lob;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class ProductGallaryResponse {
+
     private UUID id;
 
-    private Product ProductId;
+    private UUID productId;
 
-    private String image;
-    private Timestamp CreatedAt;
+    @Lob
+    private byte[] image;
 
-    private Timestamp UpdatedAt;
+    private LocalDateTime createdAt;
 
-    private UUID CreatedBy;
+    private LocalDateTime updatedAt;
 
-    private UUID UpdatedBy;
+    private UUID createdBy;
+
+    private UUID updatedBy;
 }

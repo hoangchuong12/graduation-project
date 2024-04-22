@@ -1,11 +1,7 @@
 package com.project.commodity.service.impl;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
 import com.project.commodity.entity.ProductTag;
-import com.project.commodity.exception.ProductTagServiceCustomException;
 import com.project.commodity.payload.request.ProductTagRequest;
 import com.project.commodity.payload.response.ProductTagResponse;
 import com.project.commodity.repository.ProductTagRepository;
@@ -16,54 +12,69 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-@Log4j2
 public class ProductTagServiceImpl implements ProductTagService {
 
     private final ProductTagRepository productTagRepository;
 
+    public ProductTagServiceImpl(ProductTagRepository productTagRepository) {
+        this.productTagRepository = productTagRepository;
+    }
+
     @Override
-    public UUID addProductTag(ProductTagRequest request) {
+    public ProductTagResponse create(ProductTagRequest productTagRequest) {
         ProductTag productTag = new ProductTag();
-        BeanUtils.copyProperties(request, productTag);
+        productTag.setProductId(productTagRequest.getProductId());
+        productTag.setTagId(productTagRequest.getTagId());
         ProductTag savedProductTag = productTagRepository.save(productTag);
-        return savedProductTag.getId();
+        return mapProductTagToResponse(savedProductTag);
+    }
+
+    @Override
+    public List<ProductTagResponse> getProductTagsByProductId(UUID productId) {
+        List<ProductTag> productTags = productTagRepository.findByProductId(productId);
+        return mapProductTagsToResponse(productTags);
+    }
+
+    @Override
+    public List<ProductTagResponse> getProductTagsByTagId(UUID tagId) {
+        List<ProductTag> productTags = productTagRepository.findByTagId(tagId);
+        return mapProductTagsToResponse(productTags);
+    }
+
+    @Override
+    public void delete(UUID productId, UUID tagId) {
+        productTagRepository.deleteByProductIdAndTagId(productId, tagId);
+    }
+
+    @Override
+    public void deleteProductTagsByProductId(UUID productId) {
+        productTagRepository.deleteByProductId(productId);
+    }
+
+    @Override
+    public void deleteProductTagsByTagId(UUID tagId) {
+        productTagRepository.deleteByTagId(tagId);
     }
 
     @Override
     public List<ProductTagResponse> getAllProductTags() {
-        return productTagRepository.findAll().stream()
-                .map(productTag -> {
-                    ProductTagResponse response = new ProductTagResponse();
-                    BeanUtils.copyProperties(productTag, response);
-                    return response;
-                })
+        List<ProductTag> productTags = productTagRepository.findAll();
+        return mapProductTagsToResponse(productTags);
+    }
+
+    // Helper method to map ProductTag to ProductTagResponse
+    private ProductTagResponse mapProductTagToResponse(ProductTag productTag) {
+        return ProductTagResponse.builder()
+                .id(productTag.getId())
+                .productId(productTag.getProductId())
+                .tagId(productTag.getTagId())
+                .build();
+    }
+
+    // Helper method to map list of ProductTag to list of ProductTagResponse
+    private List<ProductTagResponse> mapProductTagsToResponse(List<ProductTag> productTags) {
+        return productTags.stream()
+                .map(this::mapProductTagToResponse)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public ProductTagResponse getProductTagById(UUID productTagId) {
-        ProductTag productTag = productTagRepository.findById(productTagId)
-                .orElseThrow(() -> new ProductTagServiceCustomException("Product tag with given ID not found", "product_tag_not_found"));
-        ProductTagResponse response = new ProductTagResponse();
-        BeanUtils.copyProperties(productTag, response);
-        return response;
-    }
-
-    @Override
-    public ProductTagResponse editProductTag(UUID productTagId, ProductTagRequest request) {
-        ProductTag productTag = productTagRepository.findById(productTagId)
-                .orElseThrow(() -> new ProductTagServiceCustomException("Product tag with given ID not found", "product_tag_not_found"));
-        BeanUtils.copyProperties(request, productTag);
-        ProductTag savedProductTag = productTagRepository.save(productTag);
-        ProductTagResponse response = new ProductTagResponse();
-        BeanUtils.copyProperties(savedProductTag, response);
-        return response;
-    }
-
-    @Override
-    public void deleteProductTagById(UUID productTagId) {
-        log.info("Deleting product tag with ID: {}", productTagId);
-        productTagRepository.deleteById(productTagId);
     }
 }

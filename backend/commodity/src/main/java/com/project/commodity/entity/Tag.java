@@ -1,43 +1,39 @@
 package com.project.commodity.entity;
 
-
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-
-@Entity
 @Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Table(name = "TAGS")
 public class Tag {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID id;
 
-    @Column(name = "NAME")
-    private String Name;
-    
-    @Column(name = "ICON")
-    private String Icon;
-    @Column(name = "CREATED_AT")
-    private Timestamp CreatedAt;
+    private String name;
 
-    @Column(name = "UPDATED_AT")
-    private Timestamp UpdatedAt;
+    @Lob
+    private byte[] icon;
 
-    @Column(name = "CREATED_BY")
-    private UUID CreatedBy;
+    private LocalDateTime createdAt;
 
-    @Column(name = "UPDATED_BY")
-    private UUID UpdatedBy;
-    
+    private LocalDateTime updatedAt;
+
+    private UUID createdBy;
+
+    private UUID updatedBy;
 }

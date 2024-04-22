@@ -22,7 +22,8 @@ public class Information {
     private String Name;
 
     @Column(name = "LOGO")
-    private String Logo;
+    @Lob
+    private byte[] logo;
 
     @Column(name = "ADDRESS")
     private String Address;
@@ -44,4 +45,7 @@ public class Information {
 
     @Column(name ="REPRESENT_Phone")
     private String RepresentPhone;
+    
+    @Column(name = "UPDATED_BY")
+    private UUID UpdatedBy;
 }

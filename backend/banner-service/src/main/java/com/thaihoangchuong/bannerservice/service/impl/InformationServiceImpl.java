@@ -3,12 +3,10 @@ package com.thaihoangchuong.bannerservice.service.impl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.thaihoangchuong.bannerservice.entity.Information;
-import com.thaihoangchuong.bannerservice.exception.InformationServiceCustomException;
 import com.thaihoangchuong.bannerservice.payload.request.InformationRequest;
 import com.thaihoangchuong.bannerservice.payload.response.InformationResponse;
 import com.thaihoangchuong.bannerservice.repository.InformationRepository;
 import com.thaihoangchuong.bannerservice.service.InformationService;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,44 +21,72 @@ public class InformationServiceImpl implements InformationService {
     }
 
     @Override
-    public UUID addInformation(InformationRequest request) {
+    public InformationResponse create(InformationRequest informationRequest) {
         Information information = new Information();
-        BeanUtils.copyProperties(request, information);
+        mapRequestToEntity(informationRequest, information);
         Information savedInformation = informationRepository.save(information);
-        return savedInformation.getId();
+        return mapInformationToInformationResponse(savedInformation);
     }
 
     @Override
-    public List<InformationResponse> getAllInformations() {
-        return informationRepository.findAll().stream()
-                .map(this::convertToResponse)
+    public InformationResponse getById(UUID id) {
+        Information information = informationRepository.findById(id).orElse(null);
+        if (information != null) {
+            return mapInformationToInformationResponse(information);
+        }
+        return null;
+    }
+
+    @Override
+    public List<InformationResponse> getAll() {
+        List<Information> informations = informationRepository.findAll();
+        return informations.stream()
+                .map(this::mapInformationToInformationResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public InformationResponse getInformationById(UUID informationId) {
-        Information information = informationRepository.findById(informationId)
-                .orElseThrow(() -> new InformationServiceCustomException("Information with given ID not found", "information_not_found"));
-        return convertToResponse(information);
+    public InformationResponse update(UUID id, InformationRequest informationRequest) {
+        Information existingInformation = informationRepository.findById(id).orElse(null);
+        if (existingInformation != null) {
+            mapRequestToEntity(informationRequest, existingInformation);
+            Information updatedInformation = informationRepository.save(existingInformation);
+            return mapInformationToInformationResponse(updatedInformation);
+        }
+        return null;
     }
 
     @Override
-    public InformationResponse editInformation(UUID informationId, InformationRequest request) {
-        Information information = informationRepository.findById(informationId)
-                .orElseThrow(() -> new InformationServiceCustomException("Information with given ID not found", "information_not_found"));
-        BeanUtils.copyProperties(request, information);
-        Information savedInformation = informationRepository.save(information);
-        return convertToResponse(savedInformation);
+    public InformationResponse delete(UUID id) {
+        Information information = informationRepository.findById(id).orElse(null);
+        if (information != null) {
+            informationRepository.delete(information);
+            return mapInformationToInformationResponse(information);
+        }
+        return null;
     }
 
-    @Override
-    public void deleteInformationById(UUID informationId) {
-        informationRepository.deleteById(informationId);
+    private InformationResponse mapInformationToInformationResponse(Information information) {
+        if (information != null) {
+            return InformationResponse.builder()
+                    .id(information.getId())
+                    .Name(information.getName())
+                    .logo(information.getLogo())
+                    .Address(information.getAddress())
+                    .Email(information.getEmail())
+                    .Phone(information.getPhone())
+                    .BusinessNumber(information.getBusinessNumber())
+                    .License(information.getLicense())
+                    .Represent(information.getRepresent())
+                    .RepresentPhone(information.getRepresentPhone())
+                    .UpdatedBy(information.getUpdatedBy())
+                    .build();
+        }
+        return null;
     }
+    
 
-    private InformationResponse convertToResponse(Information information) {
-        InformationResponse response = new InformationResponse();
-        BeanUtils.copyProperties(information, response);
-        return response;
+    private void mapRequestToEntity(InformationRequest informationRequest, Information information) {
+        BeanUtils.copyProperties(informationRequest, information);
     }
 }

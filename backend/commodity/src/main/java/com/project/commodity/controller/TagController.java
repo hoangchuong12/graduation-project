@@ -1,50 +1,63 @@
 package com.project.commodity.controller;
 
-import com.project.commodity.payload.request.TagRequest;
-import com.project.commodity.payload.response.TagResponse;
-import com.project.commodity.service.TagService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.project.commodity.payload.request.TagRequest;
+import com.project.commodity.payload.response.TagResponse;
+import com.project.commodity.service.TagService;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/PRODUCTS-SERVICE/api/tags")
-@RequiredArgsConstructor
+@RequestMapping("/product-services/api/tags")
 public class TagController {
 
     private final TagService tagService;
 
-    @PostMapping
-    public ResponseEntity<UUID> addTag( @RequestBody TagRequest request) {
-        UUID tagId = tagService.addTag(request);
-        return new ResponseEntity<>(tagId, HttpStatus.CREATED);
+    public TagController(TagService tagService) {
+        this.tagService = tagService;
     }
 
-    @GetMapping
+    @PostMapping("/create")
+    public ResponseEntity<TagResponse> createTag(@RequestBody TagRequest tagRequest) {
+        TagResponse createdTag = tagService.create(tagRequest);
+        return new ResponseEntity<>(createdTag, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<TagResponse> getTagById(@PathVariable UUID id) {
+        TagResponse tag = tagService.getById(id);
+        if (tag != null) {
+            return ResponseEntity.ok(tag);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/get-all")
     public ResponseEntity<List<TagResponse>> getAllTags() {
-        List<TagResponse> tags = tagService.getAllTags();
-        return new ResponseEntity<>(tags, HttpStatus.OK);
+        List<TagResponse> tags = tagService.getAll();
+        return ResponseEntity.ok(tags);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TagResponse> getTagById(@PathVariable("id") UUID tagId) {
-        TagResponse tag = tagService.getTagById(tagId);
-        return new ResponseEntity<>(tag, HttpStatus.OK);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<TagResponse> updateTag(@RequestBody TagRequest tagRequest, @PathVariable UUID id) {
+        TagResponse updatedTag = tagService.update(id, tagRequest);
+        if (updatedTag != null) {
+            return ResponseEntity.ok(updatedTag);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<TagResponse> editTag(@PathVariable("id") UUID tagId, @RequestBody TagRequest request) {
-        TagResponse updatedTag = tagService.editTag(tagId, request);
-        return new ResponseEntity<>(updatedTag, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTag(@PathVariable("id") UUID tagId) {
-        tagService.deleteTagById(tagId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<TagResponse> deleteTag(@PathVariable UUID id) {
+        TagResponse deletedTag = tagService.delete(id);
+        if (deletedTag != null) {
+            return ResponseEntity.ok(deletedTag);
+        }
+        return ResponseEntity.notFound().build();
     }
 }

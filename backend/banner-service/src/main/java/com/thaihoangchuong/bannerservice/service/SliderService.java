@@ -7,9 +7,9 @@ import com.thaihoangchuong.bannerservice.payload.request.SliderRequest;
 import com.thaihoangchuong.bannerservice.payload.response.SliderResponse;
 
 public interface SliderService {
-    public UUID addSlider(SliderRequest SliderRequest);
-    public List <SliderResponse> getAllSliders();
-    public SliderResponse getSliderById (UUID SliderId);
-    public SliderResponse editSlider(UUID SliderId, SliderRequest SliderRequest);
-    public void deleteSliderById(UUID SliderId);
+    SliderResponse create(SliderRequest SliderRequest);
+    SliderResponse getById( UUID id);
+    List<SliderResponse> getAll();
+    SliderResponse update(UUID id , SliderRequest SliderRequest);
+    SliderResponse delete(UUID id);
 }

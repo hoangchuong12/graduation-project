@@ -1,24 +1,55 @@
 package com.thaihoangchuong.userservice.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-import jakarta.persistence.*;
-@Entity
+import org.hibernate.annotations.GenericGenerator;
+
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Table(name = "USERS")
+@Entity
+@Table(name = "users")
 public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID id;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
+
     private String name;
+
+    @Column(nullable = false)
+    private String userName;
+
+    @Column(nullable = false)
     private String email;
+
+    @Lob
+    private byte[] avatar;
+
+    @Column(nullable = false)
     private String password;
+
+    private String phone;
+
+    private String address;
+
+    private LocalDateTime birthday;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    private UUID createdBy;
+
+    private UUID updatedBy;
+
+    private Integer status;
+
 }

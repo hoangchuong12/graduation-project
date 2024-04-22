@@ -1,10 +1,5 @@
 package com.project.commodity.controller;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-
-import java.util.List;
-import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,40 +9,62 @@ import com.project.commodity.payload.request.BrandRequest;
 import com.project.commodity.payload.response.BrandResponse;
 import com.project.commodity.service.BrandService;
 
-
+import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/PRODUCTS-SERVICE/api/brand")
-@RequiredArgsConstructor
-@Log4j2
+@RequestMapping("product-services/api/brands")
 public class BrandController {
+
     private final BrandService brandService;
 
-    @PostMapping
-    public ResponseEntity<UUID> addBrand(@RequestBody BrandRequest brandRequest){
-        log.info("BrandCotroller | addBrand");
-        UUID BrandId = brandService.addBrand(brandRequest);
-
-        return new ResponseEntity<>(BrandId, HttpStatus.CREATED);
-    }
-    @GetMapping("/{id}")
-    public ResponseEntity<BrandResponse> getBrandById(@PathVariable("id") UUID BrandId){
-        BrandResponse brandResponse = brandService.getBrandById(BrandId);
-        return new ResponseEntity<>(brandResponse, HttpStatus.OK);
-    }
-    @GetMapping("/brands")
-    public ResponseEntity<List<BrandResponse>> getAllBenners() {
-        List<BrandResponse> brandResponses = brandService.getAllBrands();
-        return ResponseEntity.ok(brandResponses); 
+    public BrandController(BrandService brandService) {
+        this.brandService = brandService;
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<BrandResponse> editBrand(@PathVariable("id") UUID BrandId , BrandRequest brandRequest){
-        brandService.editBrand(BrandId, brandRequest);
-        return new  ResponseEntity<>(HttpStatus.OK);
+    @PostMapping("/create")
+    public ResponseEntity<BrandResponse> createBrand(@RequestBody BrandRequest brandRequest) {
+        BrandResponse createdBrand = brandService.create(brandRequest);
+        return new ResponseEntity<>(createdBrand, HttpStatus.CREATED);
     }
+
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<BrandResponse> getBrandById(@PathVariable UUID id) {
+        BrandResponse brand = brandService.getById(id);
+        if (brand != null) {
+            return ResponseEntity.ok(brand);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/get-all")
+    public ResponseEntity<List<BrandResponse>> getAllBrands() {
+        List<BrandResponse> brands = brandService.getAll();
+        return ResponseEntity.ok(brands);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<BrandResponse> updateBrand(@RequestBody BrandRequest brandRequest, @PathVariable UUID id) {
+        BrandResponse updatedBrand = brandService.update(id, brandRequest);
+        if (updatedBrand != null) {
+            return ResponseEntity.ok(updatedBrand);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @DeleteMapping("/delete/{id}")
-    public void deleteBrandById(@PathVariable("id") UUID BrandId){
-        brandService.deleteBrandById(BrandId);
+    public ResponseEntity<BrandResponse> deleteBrand(@PathVariable UUID id) {
+        BrandResponse deletedBrand = brandService.delete(id);
+        if (deletedBrand != null) {
+            return ResponseEntity.ok(deletedBrand);
+        }
+        return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/get-by-user/{userId}")
+    public ResponseEntity<List<BrandResponse>> getBrandsByUser(@PathVariable UUID userId) {
+        List<BrandResponse> brands = brandService.findByUser(userId);
+        return ResponseEntity.ok(brands);
+    }
+
 }

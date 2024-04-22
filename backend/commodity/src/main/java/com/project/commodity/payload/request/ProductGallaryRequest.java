@@ -1,31 +1,20 @@
 package com.project.commodity.payload.request;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.sql.Timestamp;
 import java.util.UUID;
 
-import com.project.commodity.entity.Product;
+import jakarta.persistence.Lob;
+import lombok.Builder;
+import lombok.Data;
 
-
-@AllArgsConstructor
-@Data
-@NoArgsConstructor
 @Builder
+@Data
 public class ProductGallaryRequest {
 
+    private UUID productId;
 
-    private Product ProductId;
+    @Lob
+    private byte[] image;
 
-    private String image;
-    private Timestamp CreatedAt;
+    private UUID createdBy;
 
-    private Timestamp UpdatedAt;
-
-    private UUID CreatedBy;
-
-    private UUID UpdatedBy;
+    private UUID updatedBy;
 }

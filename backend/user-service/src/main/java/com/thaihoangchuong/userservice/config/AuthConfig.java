@@ -28,7 +28,11 @@ public class AuthConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/auth/register", "/auth/token", "/auth/validate").permitAll()
+                .requestMatchers("user-services/api/users/create", 
+                "user-services/api/users/token", 
+                "user-services/api/users/validate",
+                "user-services/api/roles/create",
+                "user-services/api/users/get-user-for-brand/{id}").permitAll()
                 .and()
                 .build();
     }
@@ -50,5 +54,5 @@ public class AuthConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-}
 
+}

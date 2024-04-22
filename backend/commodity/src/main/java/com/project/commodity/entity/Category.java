@@ -1,50 +1,50 @@
 package com.project.commodity.entity;
 
+
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
-import java.util.UUID;
-import java.sql.Timestamp;
-
-@Entity
 @Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Table(name = "CATEGORIES")
 public class Category {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID id;
 
-    @Column(name = "CATEGORY_NAME")
-    private String CategoryName;
+    @Column(nullable = false)
+    private String name;
 
-    @Column(name = "IMAGE")
-    private String Image;
+    @Lob
+    private byte[] image;
 
-    @Column(name = "DESCIPTION")
-    private String desciption;
+    @Column(name = "product_quantity")
+    private Long productQuantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PARENT_CATEGORY_ID", referencedColumnName = "id")
-    private Category parentCategory;
+    private String description;
 
-    @Column(name = "CREATED_AT")
-    private Timestamp CreatedAt;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
-    @Column(name = "UPDATED_AT")
-    private Timestamp UpdatedAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    @Column(name = "CREATED_BY")
-    private UUID CreatedBy;
+    @Column(name = "created_by")
+    private UUID createdBy;
 
-    @Column(name = "UPDATED_BY")
-    private UUID UpdatedBy;
+    @Column(name = "updated_by")
+    private UUID updatedBy;
 
-    @Column(name = "STATUS")
+    @Column(nullable = false)
     private Integer status;
 }

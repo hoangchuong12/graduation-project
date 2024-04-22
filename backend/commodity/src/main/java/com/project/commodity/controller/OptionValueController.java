@@ -1,50 +1,69 @@
 package com.project.commodity.controller;
 
-import com.project.commodity.payload.request.OptionValueRequest;
-import com.project.commodity.payload.response.OptionValueResponse;
-import com.project.commodity.service.OptionValueService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.project.commodity.payload.request.OptionValueRequest;
+import com.project.commodity.payload.response.OptionValueResponse;
+import com.project.commodity.service.OptionValueService;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/PRODUCTS-SERVICE/api/option-values")
-@RequiredArgsConstructor
+@RequestMapping("product-services/api/option-values")
 public class OptionValueController {
 
     private final OptionValueService optionValueService;
 
-    @PostMapping
-    public ResponseEntity<UUID> addOptionValue(@RequestBody OptionValueRequest request) {
-        UUID optionValueId = optionValueService.addOptionValue(request);
-        return new ResponseEntity<>(optionValueId, HttpStatus.CREATED);
+    public OptionValueController(OptionValueService optionValueService) {
+        this.optionValueService = optionValueService;
     }
 
-    @GetMapping
+    @PostMapping("/create")
+    public ResponseEntity<OptionValueResponse> createOptionValue(@RequestBody OptionValueRequest optionValueRequest) {
+        OptionValueResponse createdOptionValue = optionValueService.create(optionValueRequest);
+        return new ResponseEntity<>(createdOptionValue, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<OptionValueResponse> getOptionValueById(@PathVariable UUID id) {
+        OptionValueResponse optionValue = optionValueService.getById(id);
+        if (optionValue != null) {
+            return ResponseEntity.ok(optionValue);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/get-all")
     public ResponseEntity<List<OptionValueResponse>> getAllOptionValues() {
-        List<OptionValueResponse> optionValues = optionValueService.getAllOptionValues();
-        return new ResponseEntity<>(optionValues, HttpStatus.OK);
+        List<OptionValueResponse> optionValues = optionValueService.getAll();
+        return ResponseEntity.ok(optionValues);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OptionValueResponse> getOptionValueById(@PathVariable("id") UUID optionValueId) {
-        OptionValueResponse optionValue = optionValueService.getOptionValueById(optionValueId);
-        return new ResponseEntity<>(optionValue, HttpStatus.OK);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<OptionValueResponse> updateOptionValue(@RequestBody OptionValueRequest optionValueRequest, @PathVariable UUID id) {
+        OptionValueResponse updatedOptionValue = optionValueService.update(id, optionValueRequest);
+        if (updatedOptionValue != null) {
+            return ResponseEntity.ok(updatedOptionValue);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<OptionValueResponse> editOptionValue(@PathVariable("id") UUID optionValueId, @RequestBody OptionValueRequest request) {
-        OptionValueResponse updatedOptionValue = optionValueService.editOptionValue(optionValueId, request);
-        return new ResponseEntity<>(updatedOptionValue, HttpStatus.OK);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<OptionValueResponse> deleteOptionValue(@PathVariable UUID id) {
+        OptionValueResponse deletedOptionValue = optionValueService.delete(id);
+        if (deletedOptionValue != null) {
+            return ResponseEntity.ok(deletedOptionValue);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOptionValue(@PathVariable("id") UUID optionValueId) {
-        optionValueService.deleteOptionValueById(optionValueId);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/get-by-option-id/{optionId}")
+    public ResponseEntity<List<OptionValueResponse>> getOptionValuesByOptionId(@PathVariable UUID optionId) {
+        List<OptionValueResponse> optionValues = optionValueService.findByOptionId(optionId);
+        return ResponseEntity.ok(optionValues);
     }
 }

@@ -1,7 +1,7 @@
 package com.thaihoangchuong.bannerservice.payload.request;
 
 
-import java.sql.Timestamp;
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +18,6 @@ public class SliderRequest {
 
     private String Name;
     private String Image;
-    private Timestamp CreatedAt;
-    private Timestamp UpdatedAt;
+    private UUID CreatedBy;
+    private UUID UpdatedBy;
 }

@@ -1,18 +1,17 @@
 package com.thaihoangchuong.bannerservice.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import com.thaihoangchuong.bannerservice.payload.request.BannerRequest;
 import com.thaihoangchuong.bannerservice.payload.response.BannerResponse;
 import com.thaihoangchuong.bannerservice.service.BannerService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/BANNER-SERVICE/api/banners")
+@RequestMapping("banner-services/api/banners")
 public class BannerController {
 
     private final BannerService bannerService;
@@ -21,34 +20,46 @@ public class BannerController {
         this.bannerService = bannerService;
     }
 
-    @PostMapping
-    public ResponseEntity<UUID> addBanner(@RequestBody BannerRequest request) {
-        UUID bannerId = bannerService.addBanner(request);
-        return new ResponseEntity<>(bannerId, HttpStatus.CREATED);
+    @PostMapping("/create")
+    public ResponseEntity<BannerResponse> createBanner(@RequestBody BannerRequest bannerRequest) {
+        BannerResponse createdBanner = bannerService.create(bannerRequest);
+        return new ResponseEntity<>(createdBanner, HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<List<BannerResponse>> getAllBanners() {
-        List<BannerResponse> banners = bannerService.getAllBanners();
-        return new ResponseEntity<>(banners, HttpStatus.OK);
-    }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get-by-id/{id}")
     public ResponseEntity<BannerResponse> getBannerById(@PathVariable UUID id) {
-        BannerResponse banner = bannerService.getBannerById(id);
-        return new ResponseEntity<>(banner, HttpStatus.OK);
+        BannerResponse bannerResponse = bannerService.getById(id);
+        if (bannerResponse != null) {
+            return ResponseEntity.ok(bannerResponse);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<BannerResponse> editBanner(@PathVariable UUID id, @RequestBody BannerRequest request) {
-        BannerResponse editedBanner = bannerService.editBanner(id, request);
-        return new ResponseEntity<>(editedBanner, HttpStatus.OK);
+    @GetMapping("/get-all")
+    public ResponseEntity<List<BannerResponse>> getAllBanners() {
+        List<BannerResponse> bannerResponses = bannerService.getAll();
+        return ResponseEntity.ok(bannerResponses);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBanner(@PathVariable UUID id) {
-        bannerService.deleteBannerById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<BannerResponse> updateBanner(@PathVariable UUID id, @RequestBody BannerRequest bannerRequest) {
+        BannerResponse updatedBanner = bannerService.update(id, bannerRequest);
+        if (updatedBanner != null) {
+            return ResponseEntity.ok(updatedBanner);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<BannerResponse> deleteBanner(@PathVariable UUID id) {
+        BannerResponse deletedBanner = bannerService.delete(id);
+        if (deletedBanner != null) {
+            return ResponseEntity.ok(deletedBanner);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
-

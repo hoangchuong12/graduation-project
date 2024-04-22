@@ -1,31 +1,38 @@
 package com.project.commodity.payload.response;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.project.commodity.entity.Brand;
-
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class ProductResponse {
+
     private UUID id;
-    private Brand BrandId;
-    private String ProductName;
-    private double Price;
-    private double detail;
-    private String Description;
+
+    private UUID brandId;
+
+    private String name;
+
+    private String image;
+
+    private Double price;
+
+    private String detail;
+
+    private String description;
+
     private Integer evaluate;
-    private Timestamp CreatedAt;
-    private Timestamp UpdatedAt;
-    private UUID CreatedBy;
-    private UUID UpdatedBy;
-    private Integer satatus;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    private UUID createdBy;
+
+    private UUID updatedBy;
+
+    private Integer status;
 }

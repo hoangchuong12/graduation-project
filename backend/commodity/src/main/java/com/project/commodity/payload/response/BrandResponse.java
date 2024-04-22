@@ -1,28 +1,34 @@
 package com.project.commodity.payload.response;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Lob;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class BrandResponse {
+
     private UUID id;
-    private String BrandName;
-    private String Image;
-    private String desciption;
-    private String Title;
-    private String Address;
-    private Timestamp CreatedAt;
-    private Timestamp UpdatedAt;
-    private UUID CreatedBy;
-    private UUID UpdatedBy;
+
+    private String name;
+
+    private String description;
+
+    @Lob
+    private byte[] logo;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    private UUID createdBy;
+
+    private UUID updatedBy;
+
     private Integer status;
+
+    private UserResponse User;
 }

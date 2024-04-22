@@ -1,38 +1,41 @@
 package com.project.commodity.entity;
 
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
-import java.util.UUID;
-import java.sql.Timestamp;
-
-@Entity
 @Data
+@Entity
+@Table(name = "option_values")
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Table(name = "OPTION_VALUES")
 public class OptionValue {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "OPTION_ID", referencedColumnName  = "id")
-    private Option OptionId;
+    @Column(name = "option_id")
+    private UUID optionId;
 
-    @Column(name = "CREATED_AT")
-    private Timestamp CreatedAt;
+    private Integer value;
 
-    @Column(name = "UPDATED_AT")
-    private Timestamp UpdatedAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @Column(name = "CREATED_BY")
-    private UUID CreatedBy;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    @Column(name = "UPDATED_BY")
-    private UUID UpdatedBy;
+    @Column(name = "created_by")
+    private UUID createdBy;
+
+    @Column(name = "updated_by")
+    private UUID updatedBy;
 }

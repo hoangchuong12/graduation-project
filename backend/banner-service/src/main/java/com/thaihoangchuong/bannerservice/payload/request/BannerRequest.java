@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.sql.Timestamp;
 import java.util.UUID;
+
+import jakarta.persistence.Lob;
 
 
 @AllArgsConstructor
@@ -15,10 +15,9 @@ import java.util.UUID;
 @Builder
 public class BannerRequest {
     private String Name;
-    private String Image;
+    @Lob
+    private byte[] image;
     private String Description;
-    private Timestamp CreatedAt;
-    private Timestamp UpdatedAt;
     private UUID CreatedBy;
     private UUID UpdatedBy;
 }

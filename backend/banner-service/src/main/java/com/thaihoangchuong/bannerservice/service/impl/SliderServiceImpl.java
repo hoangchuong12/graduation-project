@@ -1,70 +1,91 @@
 package com.thaihoangchuong.bannerservice.service.impl;
 
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
 import com.thaihoangchuong.bannerservice.entity.Slider;
-import com.thaihoangchuong.bannerservice.exception.SliderServiceCustomException;
 import com.thaihoangchuong.bannerservice.payload.request.SliderRequest;
 import com.thaihoangchuong.bannerservice.payload.response.SliderResponse;
 import com.thaihoangchuong.bannerservice.repository.SliderRepository;
 import com.thaihoangchuong.bannerservice.service.SliderService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-@Log4j2
 public class SliderServiceImpl implements SliderService {
 
     private final SliderRepository sliderRepository;
 
-    @Override
-    public UUID addSlider(SliderRequest request) {
-        Slider slider = new Slider();
-        BeanUtils.copyProperties(request, slider);
-        Slider savedSlider = sliderRepository.save(slider);
-        return savedSlider.getId();
+    public SliderServiceImpl(SliderRepository sliderRepository) {
+        this.sliderRepository = sliderRepository;
     }
 
     @Override
-    public List<SliderResponse> getAllSliders() {
-        return sliderRepository.findAll().stream()
-                .map(slider -> {
-                    SliderResponse response = new SliderResponse();
-                    BeanUtils.copyProperties(slider, response);
-                    return response;
-                })
+    public SliderResponse create(SliderRequest sliderRequest) {
+        Slider slider = new Slider();
+        mapRequestToEntity(sliderRequest, slider);
+        slider.setCreatedAt(LocalDateTime.now());
+        Slider savedSlider = sliderRepository.save(slider);
+        return mapSliderToSliderResponse(savedSlider);
+    }
+
+    @Override
+    public SliderResponse getById(UUID id) {
+        Slider slider = sliderRepository.findById(id).orElse(null);
+        if (slider != null) {
+            return mapSliderToSliderResponse(slider);
+        }
+        return null;
+    }
+
+    @Override
+    public List<SliderResponse> getAll() {
+        List<Slider> sliders = sliderRepository.findAll();
+        return sliders.stream()
+                .map(this::mapSliderToSliderResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public SliderResponse getSliderById(UUID sliderId) {
-        Slider slider = sliderRepository.findById(sliderId)
-                .orElseThrow(() -> new SliderServiceCustomException("Slider with given ID not found", "slider_not_found"));
-        SliderResponse response = new SliderResponse();
-        BeanUtils.copyProperties(slider, response);
-        return response;
+    public SliderResponse update(UUID id, SliderRequest sliderRequest) {
+        Slider existingSlider = sliderRepository.findById(id).orElse(null);
+        if (existingSlider != null) {
+            mapRequestToEntity(sliderRequest, existingSlider);
+            existingSlider.setCreatedAt(LocalDateTime.now());
+            Slider updatedSlider = sliderRepository.save(existingSlider);
+            return mapSliderToSliderResponse(updatedSlider);
+        }
+        return null;
     }
 
     @Override
-    public SliderResponse editSlider(UUID sliderId, SliderRequest request) {
-        Slider slider = sliderRepository.findById(sliderId)
-                .orElseThrow(() -> new SliderServiceCustomException("Slider with given ID not found", "slider_not_found"));
-        BeanUtils.copyProperties(request, slider);
-        Slider savedSlider = sliderRepository.save(slider);
-        SliderResponse response = new SliderResponse();
-        BeanUtils.copyProperties(savedSlider, response);
-        return response;
+    public SliderResponse delete(UUID id) {
+        Slider slider = sliderRepository.findById(id).orElse(null);
+        if (slider != null) {
+            sliderRepository.delete(slider);
+            return mapSliderToSliderResponse(slider);
+        }
+        return null;
     }
 
-    @Override
-    public void deleteSliderById(UUID sliderId) {
-        log.info("Deleting slider with ID: {}", sliderId);
-        sliderRepository.deleteById(sliderId);
+    private SliderResponse mapSliderToSliderResponse(Slider slider) {
+        if (slider != null) {
+            return SliderResponse.builder()
+                    .id(slider.getId())
+                    .Name(slider.getName())
+                    .Image(slider.getImage())
+                    .CreatedAt(slider.getCreatedAt())
+                    .UpdatedAt(slider.getUpdatedAt())
+                    .CreatedBy(slider.getCreatedBy())
+                    .UpdatedBy(slider.getUpdatedBy())
+                    .build();
+        }
+        return null;
+    }
+
+    private void mapRequestToEntity(SliderRequest sliderRequest, Slider slider) {
+        BeanUtils.copyProperties(sliderRequest, slider);
     }
 }

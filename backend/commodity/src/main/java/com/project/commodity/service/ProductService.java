@@ -7,11 +7,17 @@ import com.project.commodity.payload.request.ProductRequest;
 import com.project.commodity.payload.response.ProductResponse;
 
 public interface ProductService {
-
-    public UUID addProduct(ProductRequest ProductRequest);
-    public List <ProductResponse> getAllProducts();
-    public ProductResponse getProductById (UUID ProductId);
-    public ProductResponse editProduct(UUID ProductId, ProductRequest ProductRequest);
-    public void deleteProductById(UUID ProductId);
-
+    
+    ProductResponse create(ProductRequest productRequest);
+    
+    ProductResponse getById(UUID id);
+    
+    List<ProductResponse> getAll();
+    
+    ProductResponse update(UUID id, ProductRequest productRequest);
+    
+    ProductResponse delete(UUID id);
+    
+    List<ProductResponse> findByBrandId(UUID brandId);
+    
 }

@@ -1,21 +1,14 @@
 package com.project.commodity.payload.request;
 
-import lombok.AllArgsConstructor;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import com.project.commodity.entity.Category;
-import com.project.commodity.entity.Product;
-
-
-@AllArgsConstructor
-@Data
-@NoArgsConstructor
 @Builder
+@Data
 public class ProductCategoryRequest {
 
-    private Category CategoryId;
+    private UUID productId;
 
-    private Product ProductId;
+    private UUID categoryId;
 }

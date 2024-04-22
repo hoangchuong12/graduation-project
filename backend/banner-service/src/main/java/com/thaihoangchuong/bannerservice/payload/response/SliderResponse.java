@@ -1,7 +1,7 @@
 package com.thaihoangchuong.bannerservice.payload.response;
 
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +17,8 @@ public class SliderResponse {
     private UUID id;
     private String Name;
     private String Image;
-    private Timestamp CreatedAt;
-    private Timestamp UpdatedAt;
+    private LocalDateTime CreatedAt;
+    private LocalDateTime UpdatedAt;
+    private UUID CreatedBy;
+    private UUID UpdatedBy;
 }

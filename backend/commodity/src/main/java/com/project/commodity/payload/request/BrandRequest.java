@@ -1,39 +1,23 @@
 package com.project.commodity.payload.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.util.UUID;
 
-import java.sql.Timestamp;
+import jakarta.persistence.Lob;
+import lombok.Builder;
+import lombok.Data;
 
-@AllArgsConstructor
-@Data
-@NoArgsConstructor
 @Builder
+@Data
 public class BrandRequest {
-  
 
+    private String name;
 
-    private String BrandName;
+    private String description;
 
-    private String Image;
- 
-    private String desciption;
+    @Lob
+    private byte[] logo;
 
-    private String Title;
-
-    private String Address;
-  
-    private Timestamp CreatedAt;
-
-    private Timestamp UpdatedAt;
-
-    private UUID CreatedBy;
- 
-    private UUID UpdatedBy;
+    private UUID createdBy;
 
     private Integer status;
-
 }

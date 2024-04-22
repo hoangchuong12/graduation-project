@@ -1,50 +1,64 @@
 package com.project.commodity.controller;
 
-import com.project.commodity.payload.request.ProductRequest;
-import com.project.commodity.payload.response.ProductResponse;
-import com.project.commodity.service.ProductService;
-import lombok.RequiredArgsConstructor;
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.project.commodity.payload.request.ProductRequest;
+import com.project.commodity.payload.response.ProductResponse;
+import com.project.commodity.service.ProductService;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/PRODUCTS-SERVICE/api/products")
-@RequiredArgsConstructor
+@RequestMapping("product-services/api/products")
 public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping
-    public ResponseEntity<UUID> addProduct(@RequestBody ProductRequest request) {
-        UUID productId = productService.addProduct(request);
-        return new ResponseEntity<>(productId, HttpStatus.CREATED);
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
-    @GetMapping
+    @PostMapping("/create")
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest productRequest) {
+        ProductResponse createdProduct = productService.create(productRequest);
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable UUID id) {
+        ProductResponse product = productService.getById(id);
+        if (product != null) {
+            return ResponseEntity.ok(product);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/get-all")
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        List<ProductResponse> products = productService.getAllProducts();
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        List<ProductResponse> products = productService.getAll();
+        return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> getProductById(@PathVariable("id") UUID id) {
-        ProductResponse product = productService.getProductById(id);
-        return new ResponseEntity<>(product, HttpStatus.OK);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(@RequestBody ProductRequest productRequest, @PathVariable UUID id) {
+        ProductResponse updatedProduct = productService.update(id, productRequest);
+        if (updatedProduct != null) {
+            return ResponseEntity.ok(updatedProduct);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductResponse> editProduct(@PathVariable("id") UUID id, @RequestBody ProductRequest request) {
-        ProductResponse updatedProduct = productService.editProduct(id, request);
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProductById(@PathVariable("id") UUID id) {
-        productService.deleteProductById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ProductResponse> deleteProduct(@PathVariable UUID id) {
+        ProductResponse deletedProduct = productService.delete(id);
+        if (deletedProduct != null) {
+            return ResponseEntity.ok(deletedProduct);
+        }
+        return ResponseEntity.notFound().build();
     }
 }

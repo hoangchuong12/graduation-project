@@ -1,50 +1,63 @@
 package com.project.commodity.controller;
 
-import com.project.commodity.payload.request.OptionRequest;
-import com.project.commodity.payload.response.OptionResponse;
-import com.project.commodity.service.OptionService;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.project.commodity.payload.request.OptionRequest;
+import com.project.commodity.payload.response.OptionResponse;
+import com.project.commodity.service.OptionService;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/PRODUCTS-SERVICE/api/options")
-@RequiredArgsConstructor
+@RequestMapping("product-services/api/options")
 public class OptionController {
 
     private final OptionService optionService;
 
-    @PostMapping
-    public ResponseEntity<UUID> addOption( @RequestBody OptionRequest request) {
-        UUID optionId = optionService.addOption(request);
-        return new ResponseEntity<>(optionId, HttpStatus.CREATED);
+    public OptionController(OptionService optionService) {
+        this.optionService = optionService;
     }
 
-    @GetMapping
+    @PostMapping("/create")
+    public ResponseEntity<OptionResponse> createOption(@RequestBody OptionRequest optionRequest) {
+        OptionResponse createdOption = optionService.create(optionRequest);
+        return new ResponseEntity<>(createdOption, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get-by-id/{id}")
+    public ResponseEntity<OptionResponse> getOptionById(@PathVariable UUID id) {
+        OptionResponse option = optionService.getById(id);
+        if (option != null) {
+            return ResponseEntity.ok(option);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/get-all")
     public ResponseEntity<List<OptionResponse>> getAllOptions() {
-        List<OptionResponse> options = optionService.getAllOptions();
-        return new ResponseEntity<>(options, HttpStatus.OK);
+        List<OptionResponse> options = optionService.getAll();
+        return ResponseEntity.ok(options);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OptionResponse> getOptionById(@PathVariable("id") UUID optionId) {
-        OptionResponse option = optionService.getOptionById(optionId);
-        return new ResponseEntity<>(option, HttpStatus.OK);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<OptionResponse> updateOption(@RequestBody OptionRequest optionRequest, @PathVariable UUID id) {
+        OptionResponse updatedOption = optionService.update(id, optionRequest);
+        if (updatedOption != null) {
+            return ResponseEntity.ok(updatedOption);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<OptionResponse> editOption(@PathVariable("id") UUID optionId,  @RequestBody OptionRequest request) {
-        OptionResponse updatedOption = optionService.editOption(optionId, request);
-        return new ResponseEntity<>(updatedOption, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOption(@PathVariable("id") UUID optionId) {
-        optionService.deleteOptionById(optionId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<OptionResponse> deleteOption(@PathVariable UUID id) {
+        OptionResponse deletedOption = optionService.delete(id);
+        if (deletedOption != null) {
+            return ResponseEntity.ok(deletedOption);
+        }
+        return ResponseEntity.notFound().build();
     }
 }

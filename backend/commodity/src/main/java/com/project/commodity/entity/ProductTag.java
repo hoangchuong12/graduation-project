@@ -1,32 +1,32 @@
 package com.project.commodity.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
-
 import java.util.UUID;
 
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Table(name = "PRODUCT_TAGS")
 public class ProductTag {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(name = "PRODUCT_ID", referencedColumnName  = "id")
-    private Product ProductId;
+    @Column(nullable = false)
+    private UUID productId;
 
-    @ManyToOne
-    @JoinColumn(name = "TAG_ID", referencedColumnName =  "id")
-    private Tag TagId;
+    @Column(nullable = false)
+    private UUID tagId;
 
 }
