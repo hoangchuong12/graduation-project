@@ -2,7 +2,6 @@ package com.project.commodity.payload.request;
 
 import java.util.UUID;
 
-import jakarta.persistence.Lob;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,8 +13,7 @@ public class BrandRequest {
 
     private String description;
 
-    @Lob
-    private byte[] logo;
+    private String logo;
 
     private UUID createdBy;
 

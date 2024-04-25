@@ -3,7 +3,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.project.commodity.entity.ProductFeedback;
-import com.project.commodity.payload.request.FeedbackGallaryRequest;
 import com.project.commodity.payload.request.ProductFeedbackRequest;
 import com.project.commodity.payload.response.FeedbackGallaryResponse;
 import com.project.commodity.payload.response.ProductFeedbackResponse;
@@ -29,25 +28,16 @@ public class ProductFeedbackServiceImpl implements ProductFeedbackService {
         this.feedbackGallaryService = feedbackGallaryService; // Initializing FeedbackGallaryService
     }
 
-    @Override
-    public ProductFeedbackResponse create(ProductFeedbackRequest productFeedbackRequest) {
-        ProductFeedback productFeedback = new ProductFeedback();
-        mapRequestToEntity(productFeedbackRequest, productFeedback);
-        productFeedback.setCreatedAt(LocalDateTime.now());
-        ProductFeedback savedProductFeedback = productFeedbackRepository.save(productFeedback);
-        List<FeedbackGallaryResponse> galleries = new ArrayList<>();
-        if (productFeedbackRequest.getImages() != null) {
-            for (byte[] image : productFeedbackRequest.getImages()) {
-                FeedbackGallaryRequest galleryRequest = FeedbackGallaryRequest.builder()
-                        .feedbackId(savedProductFeedback.getId())
-                        .image(image)
-                        .build();
-                FeedbackGallaryResponse createdGallery = feedbackGallaryService.create(galleryRequest);
-                galleries.add(createdGallery);
-            }
-        }
-        return mapProductFeedbackToResponse(savedProductFeedback, galleries);
-    }
+@Override
+public ProductFeedbackResponse create(ProductFeedbackRequest productFeedbackRequest) {
+    ProductFeedback productFeedback = new ProductFeedback();
+    mapRequestToEntity(productFeedbackRequest, productFeedback);
+    productFeedback.setCreatedAt(LocalDateTime.now());
+    ProductFeedback savedProductFeedback = productFeedbackRepository.save(productFeedback);
+    List<FeedbackGallaryResponse> galleries = new ArrayList<>();
+    return mapProductFeedbackToResponse(savedProductFeedback, galleries);
+}
+
 
     @Override
     public ProductFeedbackResponse getById(UUID id) {

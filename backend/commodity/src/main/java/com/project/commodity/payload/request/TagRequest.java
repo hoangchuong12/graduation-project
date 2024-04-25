@@ -1,7 +1,6 @@
 package com.project.commodity.payload.request;
 import java.util.UUID;
 
-import jakarta.persistence.Lob;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,8 +10,7 @@ public class TagRequest {
 
     private String name;
 
-    @Lob
-    private byte[] icon;
+    private String icon;
 
     private UUID createdBy;
 

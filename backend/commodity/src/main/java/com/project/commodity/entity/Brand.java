@@ -26,8 +26,7 @@ public class Brand {
 
     private String description;
 
-    @Lob
-    private byte[] logo;
+    private String logo;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

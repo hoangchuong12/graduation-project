@@ -3,7 +3,6 @@ package com.project.commodity.payload.response;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import jakarta.persistence.Lob;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,8 +16,7 @@ public class BrandResponse {
 
     private String description;
 
-    @Lob
-    private byte[] logo;
+    private String logo;
 
     private LocalDateTime createdAt;
 

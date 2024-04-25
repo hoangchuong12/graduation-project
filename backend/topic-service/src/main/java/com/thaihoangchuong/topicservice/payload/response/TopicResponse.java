@@ -1,14 +1,13 @@
 package com.thaihoangchuong.topicservice.payload.response;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-
-
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+    import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -17,10 +16,11 @@ import lombok.NoArgsConstructor;
 public class TopicResponse {
     private UUID id;
     private String Name;
-    private String Image;
+    @Lob
+    private byte[] Image;
     private String Description;
-    private Timestamp CreatedAt;
-    private Timestamp UpdatedAt;
+    private LocalDateTime CreatedAt;
+    private LocalDateTime UpdatedAt;
     private UUID CreatedBy;
     private UUID UpdatedBy;
 }

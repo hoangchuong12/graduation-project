@@ -8,7 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -26,8 +26,7 @@ public class Tag {
 
     private String name;
 
-    @Lob
-    private byte[] icon;
+    private String icon;
 
     private LocalDateTime createdAt;
 

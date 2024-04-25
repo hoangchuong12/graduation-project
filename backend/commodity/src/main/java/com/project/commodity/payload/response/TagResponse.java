@@ -2,7 +2,7 @@ package com.project.commodity.payload.response;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import jakarta.persistence.Lob;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,8 +14,7 @@ public class TagResponse {
 
     private String name;
 
-    @Lob
-    private byte[] icon;
+    private String icon;
 
     private LocalDateTime createdAt;
 

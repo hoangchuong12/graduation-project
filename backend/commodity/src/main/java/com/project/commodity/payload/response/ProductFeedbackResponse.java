@@ -21,6 +21,8 @@ public class ProductFeedbackResponse {
 
     private String detail;
 
+    private String image;
+    
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
@@ -30,4 +32,6 @@ public class ProductFeedbackResponse {
     private UUID updatedBy;
 
     private List<FeedbackGallaryResponse> galleries;
+
+    
 }

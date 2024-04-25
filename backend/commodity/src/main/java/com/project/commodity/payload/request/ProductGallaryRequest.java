@@ -1,7 +1,6 @@
 package com.project.commodity.payload.request;
 import java.util.UUID;
 
-import jakarta.persistence.Lob;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,8 +10,7 @@ public class ProductGallaryRequest {
 
     private UUID productId;
 
-    @Lob
-    private byte[] image;
+    private String image;
 
     private UUID createdBy;
 

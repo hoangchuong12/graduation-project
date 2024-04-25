@@ -8,9 +8,9 @@ import com.thaihoangchuong.topicservice.payload.response.TopicResponse;
 
 public interface TopicService {
 
-    public UUID addTopic(TopicRequest TopicRequest);
-    public List <TopicResponse> getAllTopics();
-    public TopicResponse getTopicById (UUID TopicId);
-    public TopicResponse editTopic(UUID TopicId, TopicRequest TopicRequest);
-    public void deleteTopicById(UUID TopicId);
+    TopicResponse create(TopicRequest TopicRequest);
+    TopicResponse getById( UUID id);
+    List<TopicResponse> getAll();
+    TopicResponse update(UUID id , TopicRequest TopicRequest);
+    TopicResponse delete(UUID id);
 }

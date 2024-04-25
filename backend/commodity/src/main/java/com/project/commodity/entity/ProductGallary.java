@@ -25,8 +25,7 @@ public class ProductGallary {
     @Column(name = "product_id")
     private UUID productId;
 
-    @Lob
-    private byte[] image;
+    private String image;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

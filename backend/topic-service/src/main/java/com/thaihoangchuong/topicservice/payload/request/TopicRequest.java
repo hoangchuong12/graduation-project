@@ -6,8 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
 import java.util.UUID;
+
+import jakarta.persistence.Lob;
 
 
 
@@ -17,10 +18,9 @@ import java.util.UUID;
 @Builder
 public class TopicRequest {
     private String Name;
-    private String Image;
+    @Lob
+    private byte[] Image;
     private String Description;
-    private Timestamp CreatedAt;
-    private Timestamp UpdatedAt;
     private UUID CreatedBy;
     private UUID UpdatedBy;
 }

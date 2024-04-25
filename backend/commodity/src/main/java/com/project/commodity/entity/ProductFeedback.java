@@ -30,6 +30,7 @@ public class ProductFeedback {
     private UUID productId;
 
     private Integer evaluate;
+    
 
     private String description;
 

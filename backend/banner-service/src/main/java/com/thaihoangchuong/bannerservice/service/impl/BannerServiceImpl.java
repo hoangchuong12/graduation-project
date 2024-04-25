@@ -87,6 +87,5 @@ public class BannerServiceImpl implements BannerService {
     
     private void mapRequestToEntity(BannerRequest bannerRequest, Banner banner) {
         BeanUtils.copyProperties(bannerRequest, banner);
-        // Exclude any properties that should not be copied
     }
 }

@@ -28,11 +28,10 @@ public class AuthConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("user-services/api/users/create", 
-                "user-services/api/users/token", 
-                "user-services/api/users/validate",
-                "user-services/api/roles/create",
-                "user-services/api/users/get-user-for-brand/{id}").permitAll()
+                .requestMatchers("/user-services/api/users/create", 
+                "/user-services/api/users/token", 
+                "/user-services/api/users/validate",
+                "/user-services/api/**").permitAll()
                 .and()
                 .build();
     }
