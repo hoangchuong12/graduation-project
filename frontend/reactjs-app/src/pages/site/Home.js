@@ -12,8 +12,7 @@ const Home = () => {
         <Category></Category>
         <Product></Product>
         <Testimonials></Testimonials>
-        <Blog></Blog>
-           
+        <Blog></Blog>  
         </>
     );
 };

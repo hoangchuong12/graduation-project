@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../assets/styles/style-prefix.css'
+import '../../assets/styles/style-prefix.css';
 import { Outlet } from 'react-router-dom';
 
 import Header from './components/Header';

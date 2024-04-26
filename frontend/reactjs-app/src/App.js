@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LayoutSite from "./layouts/LayoutSite";
 import AppRoute from "./router";
 import LayoutAdmin from "./layouts/LayoutAdmin";
-import 'react-toastify/dist/ReactToastify.css';
+import LayoutLogin from "./layouts/LayoutLogin";
+
 
 function App() {
   return (
@@ -10,6 +11,12 @@ function App() {
       <Routes>
         <Route path="/" element={<LayoutSite />}>
           {AppRoute.RouteSite.map((route, index) => {
+            const Page = route.component;
+            return <Route path={route.path} key={index} element={<Page />} />
+          })}
+        </Route>
+        <Route path="/login" element={<LayoutLogin />}>
+          {AppRoute.RouteLogin.map((route, index) => {
             const Page = route.component;
             return <Route path={route.path} key={index} element={<Page />} />
           })}
